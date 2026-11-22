@@ -31,7 +31,7 @@ Counted the way the desk's own view counts, as it was exported. `groupByCause` s
 ticket into its two causes, 379 and 33, which add up to 412: every report counted once. The
 third problem is the `oneDayMove` list in `desk-notes.json`, five reports the desk read
 differently and kept filed under the cause their tenant implies. They are a problem of their
-own and need a ticket, and they stay inside the 379, because that is how the desk counts them.
+own, and they stay inside the 379, because that is how the desk counts them.
 
 The `parser` row already had a ticket: `#4471` itself. `ticketCause` in `src/lib/kb/causes.ts`
 reads a ticket's cause off its reports, and for #4471 that cause is `parser`, which is why the
@@ -40,11 +40,18 @@ work filed a ticket only for the rows that had none:
 
 | Problem | Ticket |
 |---|---|
-| `parser` | `#4471`, on the kb |
-| `hint` | issue #2 of this repo |
-| `one-day` | issue #3 of this repo |
+| `parser` | `#4471`, on the kb, already |
+| `hint` | issue #2 of this repo, filed by this work |
+| `one-day` | none, and it needs none: these reports are in the right ticket, read the wrong way |
 
-Issue #1 of this repo was filed for `parser` and is closed: it duplicated #4471.
+`causes.ts` says which reports are in the wrong ticket: *a ticket is the cause most of its
+reports share; the rest were merged into the wrong place*. That is the `hint` cause, and its
+ticket is the one that was missing. The five one-day reports are a different case, and the same
+file says so: `readAs` counts them *where they're filed, footnoted under it*, so they stay inside
+#4471 and the desk keeps the list in `desk-notes.json`.
+
+Two issues of this repo are closed, with the reason on each: #1, filed for `parser`, duplicated
+#4471; #3, filed for `one-day`, tracked reports that are already in the right ticket.
 
 ## The page
 

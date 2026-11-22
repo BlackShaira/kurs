@@ -68,16 +68,20 @@ own* since before this page existed:
 
 ## The tickets
 
-Every row of the table above has a ticket now, carrying that row's count.
+One cause was in the wrong ticket, and `causes.ts` says which: *a ticket is the cause most of
+its reports share; **the rest were merged into the wrong place***. `ticketCause` reads #4471's
+cause off its reports and gets `parser`, so the reports of the `hint` cause are the ones in the
+wrong place. The desk's own table has been printing it beside that row for months: *not this
+ticket — no ticket of its own*.
 
-The `parser` row already had one: it is [#4471](/kb/incidents/4471) itself. `ticketCause`
-in `#lib/kb/causes` reads the ticket's cause off its reports, and for #4471 that cause is
-`parser`. So this work filed a ticket only for the rows that had none, and the desk's own table
-has been saying which those are: it prints *not this ticket — no ticket of its own* beside them.
+So one ticket was missing, and this work filed it.
 
-- `parser` — [#4471](/kb/incidents/4471), the ticket this page splits
-- `hint` — [ticket #2](https://github.com/BlackShaira/kurs/issues/2), filed by this work
-- `one-day` — [ticket #3](https://github.com/BlackShaira/kurs/issues/3), filed by this work
+- `parser` — [#4471](/kb/incidents/4471) is that ticket already
+- `hint` — [ticket #2](https://github.com/BlackShaira/kurs/issues/2), filed by this work, 33 reports
+- `one-day` — no ticket of its own, and it needs none. These reports are not in the wrong
+  place: `readAs` says they are *counted where they're filed, footnoted under it*, so they stay
+  inside #4471's count and the desk keeps them in `desk-notes.json`. The problem is real and
+  this page names it; the reports are already where this kb files them.
 
 ## What to do
 
@@ -86,8 +90,8 @@ has been saying which those are: it prints *not this ticket — no ticket of its
 2. Ship the `hint` fix in the same release as the parser fix. On its own, each of the two moves
    that group from wrong to differently wrong.
 3. Leave the counts where the desk files them. The five one-day reports stay inside #4471's
-   count and are footnoted there, because that is how this kb counts; ticket #3 tracks the
-   problem without moving the reports.
+   count and are footnoted there, because that is how this kb counts. They need no ticket of
+   their own: they are in the right ticket, read the wrong way.
 4. Decision [0001](/kb/decisions/0001-dedupe-by-subject) merges on the subject line alone and
    accepts that one bug can land in several tickets. The reverse happened here. A decision is
    never edited once accepted, so this needs a new record, not a correction of that one.

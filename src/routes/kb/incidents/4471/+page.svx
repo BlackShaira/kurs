@@ -28,9 +28,9 @@ while the reports were only ever read by their subject lines. The reports merged
 parser that reads every date month
 first, a <code>booking-v3</code> date hint that disagrees with how the form stores the date, and
 invites that land one day out. This ticket is the parser one, and fixing the parser leaves the
-other two open. Each of them now has a ticket of its own:
-<a href="https://github.com/BlackShaira/kurs/issues/2">#2</a> for the date hint and
-<a href="https://github.com/BlackShaira/kurs/issues/3">#3</a> for the one-day move. Read
+other two open. One of them was in the wrong ticket and now has its own:
+<a href="https://github.com/BlackShaira/kurs/issues/2">#2</a> for the date hint. The one-day
+reports stay counted here and footnoted, which is where this kb files them. Read
 <a href="/kb/incidents/4471/split">what this ticket actually holds</a>, with the counts built
 from the data.
 </Callout>
