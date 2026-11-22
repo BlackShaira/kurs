@@ -1,0 +1,86 @@
+---
+layout: runbook
+title: '#4471 · three problems, not one'
+owner: Aleksandra Kwiecien
+status: proposed
+reviewed: 2026-11-22
+signature: Aleksandra Kwiecien
+---
+
+<script>
+  import SplitTable from '#lib/kb/SplitTable.svelte';
+  import CauseTable from '#lib/kb/CauseTable.svelte';
+  import Callout from '#lib/kb/Callout.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+</script>
+
+[#4471](/kb/incidents/4471) says one issue, one fix queued. The reports merged into it describe
+three, and they need three fixes. Nobody mis-read anything: the merge rule never reads a body,
+so a ticket can only ever be as sharp as its subject lines, and these subject lines are the same
+for all three.
+
+<Callout kind="warn">
+Fixing the parser closes most of this ticket and leaves two problems open, one of which the fix
+can make worse.
+</Callout>
+
+## What the reports describe
+
+<SplitTable ticket={4471} />
+
+## Why the third one is not a swap
+
+A swapped date and a date one day out look alike in a subject line and nothing alike in a body.
+A swap turns 7 April into 4 July: the two numbers trade places. These reports have no second
+number to trade:
+
+- `R-41202` — the invite says Tuesday 12 May, the calendar says Monday 11 May. 12 and 11 are not
+  each other's transpose.
+- `R-41620` — Tuesday 6 October showed as Monday.
+- `R-41344` — the client in Lisbon got Tuesday, the client in Toronto got Monday, for one meeting.
+- `R-41209` — every booking in June is one day off, and only June.
+- `R-41236` — the invite arrived before the booking was made.
+
+Two timezones disagreeing about which day it is, and one month behaving differently from the
+others, point at an offset, not at a parser. The desk already saw it: these five ids are the
+`oneDayMove` list in `desk-notes.json`. The kb files them under the cause their tenant implies,
+because `causeOf` reads the tenant and the channel and never the words.
+
+## Why the second one survives the fix
+
+`booking-v2` prints `DD/MM/YYYY` under its date field, and `booking-v3` prints `MM/DD/YYYY`.
+Three tenants run `booking-v3` and all three write the day first. Their people type the month
+first, because the hint tells them to, and the form stores it the tenant's way. Every report in
+this group came through the form and through no other channel.
+
+So these dates are wrong in the opposite direction from the rest of the ticket. Teach the parser
+to read each tenant's order and this group gets read the tenant's way too, which is not the way it
+was typed. The hint and the reader have to agree first; either the hint matches how the form
+reads, or the form reads what the hint promised.
+
+## What the ticket's own table already showed
+
+The incident page claims one cause in its words. Its own table, built from the data at render
+time, has been printing two rows and flagging the second as *not this ticket — no ticket of its
+own* since before this page existed:
+
+<CauseTable ticket={4471} />
+
+## What to do
+
+1. Open one ticket per row of the table above, each with its own count.
+2. Leave #4471 as the parser ticket and move the other two counts out of it, so no fix is
+   reported against reports it does not fix.
+3. Decision [0001](/kb/decisions/0001-dedupe-by-subject) merges on the subject line alone and
+   accepts that one bug can land in several tickets. The reverse happened here. A decision is
+   never edited once accepted, so this needs a new record, not a correction of that one.
+
+## What this page does not settle
+
+- Which offset causes the one-day group. Five reports name two timezones and one month; that is
+  enough to separate the problem, not enough to name its cause.
+- Whether more than five reports belong to the one-day group. The five are the desk's own list.
+  Pattern matching over the bodies finds four of them and misses `R-41236`, so the real number is
+  a question for whoever reads all 412 bodies, not for a regular expression.
+
+<RenderStamp {signature} />
