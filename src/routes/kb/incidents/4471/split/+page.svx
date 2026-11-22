@@ -66,6 +66,16 @@ own* since before this page existed:
 
 <CauseTable ticket={4471} />
 
+## The tickets
+
+One ticket per row of the table above, each carrying that row's count. They are the desk's
+tickets, filed as issues, and each one links back to [#4471](/kb/incidents/4471), the ticket it
+splits:
+
+- [ticket #1](https://github.com/BlackShaira/kurs/issues/1) — the `parser` row
+- [ticket #2](https://github.com/BlackShaira/kurs/issues/2) — the `hint` row
+- [ticket #3](https://github.com/BlackShaira/kurs/issues/3) — the `one-day` row
+
 ## What to do
 
 1. Open one ticket per row of the table above, each with its own count.
