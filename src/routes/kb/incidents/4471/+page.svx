@@ -26,8 +26,8 @@ Known. One issue, one fix queued.
 Three problems, not one. <b>This supersedes the line above</b>, which is what the desk believed
 while the reports were only ever read by their subject lines. The table below has been printing
 two causes all along, and flagging the second as having no ticket of its own. It now has one:
-<a href="https://github.com/BlackShaira/kurs/issues/2">#2</a> for the date hint, beside
-<a href="https://github.com/BlackShaira/kurs/issues/1">#1</a> for the parser. The third problem,
+<a href="https://github.com/BlackShaira/kurs/issues/2">#2</a> for the date hint. This ticket stays
+the parser's ticket. The third problem,
 invites landing one day out, is counted in this ticket and footnoted there, and
 <a href="/kb/incidents/4471/split">what this ticket actually holds</a> works all three out with
 the counts built from the data.

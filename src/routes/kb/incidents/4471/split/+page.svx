@@ -76,8 +76,8 @@ cause most of its reports share; the rest were merged into the wrong place*. `ti
 #4471's cause off its reports and gets `parser`, so the `hint` reports are the ones in the wrong
 place, and the table above says so in its own words.
 
-- `parser` — [ticket #1](https://github.com/BlackShaira/kurs/issues/1), and on the kb it is
-  [#4471](/kb/incidents/4471) itself
+- `parser` — [#4471](/kb/incidents/4471) itself. It already is this cause's ticket, so it gets
+  no second one
 - `hint` — [ticket #2](https://github.com/BlackShaira/kurs/issues/2), the ticket this cause
   never had
 - `one-day` — no ticket. These reports are not in the wrong ticket, so `readAs` keeps them

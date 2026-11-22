@@ -22,7 +22,7 @@ moving a report would take it out of the desk's view of #4471 altogether.
 
 | Problem | Reports | Ticket |
 |---|---|---|
-| the parser reads every date month first | 379 | issue #1 of this repo, and `#4471` itself on the kb |
+| the parser reads every date month first | 379 | `#4471` itself, so this repo files no second ticket for it |
 | `booking-v3` asks for `MM/DD/YYYY` and stores the date day-first | 33 | issue #2 of this repo |
 | invites land one day out | 5, inside the 379 | none, and it needs none |
 
