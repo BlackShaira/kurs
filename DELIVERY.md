@@ -1,108 +1,70 @@
 # What ticket #4471 actually holds
 
-This repo is the support desk's knowledge base, exactly as it was exported on 2026-10-04,
-with one page added to it, about what `#4471` really holds, and one callout added to the
-desk's own page for that ticket, so a reader of #4471 reaches the new page. The kb is here so the
-added page sits in the base it belongs to, with its imports resolving and its tables built
-from the desk's own data, the way the desk would see it.
+This repo is the support desk's knowledge base, as it was exported on 2026-10-04, with one page
+added about what `#4471` really holds, and one callout added to the desk's own page for that
+ticket so a reader of #4471 reaches the new page. The kb is here so the added page sits in the
+base it belongs to, with its imports resolving and its tables built from the desk's own data.
 
-| Path | What it is |
+| Path in this repo | What it is |
 |---|---|
-| `README.md`, `src/` | the kb as exported, byte for byte, apart from the two files below |
-| `src/lib/data/reports-4471.json` | the desk's reports, with one field changed: the 33 reports of the `hint` cause carry `mergedInto: 2`, the ticket they should always have had. Nothing else in the file was touched, `mergedAt` included |
-| `src/routes/kb/incidents/4471/+page.svx` | the desk's own incident page, with one callout added: it points at the page below and at the ticket. Nothing in it was removed or rewritten |
+| `README.md`, `src/` | the kb as exported, byte for byte, apart from the one file below |
+| `src/routes/kb/incidents/4471/+page.svx` | the desk's own incident page, with one callout added. Nothing in it was removed or rewritten |
 | `src/routes/kb/incidents/4471/split/+page.svx` | the page added by this work |
 | `src/lib/kb/SplitTable.svelte` | the component that page uses, added by this work |
 | `rendered/kb/incidents/4471/split/index.html` | that page as the desk will see it |
 | `DELIVERY.md` | this file |
 
-The desk's ticket `#4471` is the kb page `src/routes/kb/incidents/4471/+page.svx`, and its
-reports are `src/lib/data/reports-4471.json`. The tickets this work filed are the open issues
-of this repo, and each one names that page and that data.
+The desk's reports are `src/lib/data/reports-4471.json`, unchanged: every one of them still
+carries `mergedInto: 4471`. The ticket a report belongs to is that field and nothing else, so
+moving a report would take it out of the desk's view of #4471 altogether.
 
-## The three problems
+## The problems in #4471
 
-| Problem | Reports | Why it is its own problem |
+| Problem | Reports | Ticket |
 |---|---|---|
-| The parser reads every date month first | 379 | all 11 tenants write the day first, so day and month trade places |
-| `booking-v3` asks for `MM/DD/YYYY` and stores the date day-first | 33 | only through the form, only at the 3 tenants on that form; typed month-first on purpose |
-| Invites land one day out | 5, inside the 379 | no second number to trade; one meeting reached two timezones on two different days |
+| the parser reads every date month first | 379 | issue #1 of this repo, and `#4471` itself on the kb |
+| `booking-v3` asks for `MM/DD/YYYY` and stores the date day-first | 33 | issue #2 of this repo |
+| invites land one day out | 5, inside the 379 | none, and it needs none |
 
-Counted the way the desk's own view counts, as it was exported. `groupByCause` splits the
-ticket into its two causes, 379 and 33, which add up to 412: every report counted once. The
-third problem is the `oneDayMove` list in `desk-notes.json`, five reports the desk read
-differently and kept filed under the cause their tenant implies. They are a problem of their
-own, and they stay inside the 379, because that is how the desk counts them.
+Counted the way the desk's own view counts, as it was exported: `groupByCause` in
+`src/lib/kb/causes.ts` over `uniqueById` of the reports. The two causes are 379 and 33, which add
+up to the 412 the ticket holds. Do not take those numbers from this file — `CauseTable` on
+#4471's page and `SplitTable` on the added page both print them from the data at render time,
+which is the kb's own rule: a number that can be computed belongs in a component.
 
-The `parser` row already had a ticket: `#4471` itself. `ticketCause` in `src/lib/kb/causes.ts`
-reads a ticket's cause off its reports, and for #4471 that cause is `parser`, which is why the
-desk's own table prints *not this ticket — no ticket of its own* beside the other rows. So this
-work filed a ticket only for the rows that had none:
+## Why the third problem has no ticket
 
-| Problem | Ticket |
-|---|---|
-| `parser` | `#4471`, on the kb, already |
-| `hint` | issue #2 of this repo, filed by this work |
-| `one-day` | none, and it needs none: these reports are in the right ticket, read the wrong way |
+`causes.ts` separates two cases, and only one of them is a ticket's worth.
 
-`causes.ts` says which reports are in the wrong ticket: *a ticket is the cause most of its
-reports share; the rest were merged into the wrong place*. That is the `hint` cause, and its
-ticket is the one that was missing. The five one-day reports are a different case, and the same
-file says so: `readAs` counts them *where they're filed, footnoted under it*, so they stay inside
-#4471 and the desk keeps the list in `desk-notes.json`.
+Reports whose cause is not the ticket's cause were, in its own words, *merged into the wrong
+place*. That is the `booking-v3` hint group, and issue #2 is the ticket it never had.
 
-Two issues of this repo are closed, with the reason on each: #1, filed for `parser`, duplicated
-#4471; #3, filed for `one-day`, tracked reports that are already in the right ticket.
-
-## The page
-
-| File | What it is |
-|---|---|
-| `src/routes/kb/incidents/4471/split/+page.svx` | the page, in the knowledge base's own format |
-| `src/lib/kb/SplitTable.svelte` | the component that counts the three problems at render time |
-| `rendered/kb/incidents/4471/split/index.html` | the page as the desk will see it |
-
-The page follows the conventions in the export's own README: words in the page, logic in
-`src/lib`, every number computed by a component rather than typed into a paragraph, the
-frontmatter fields the layout expects, and a signature with a render stamp at the end.
+The `oneDayMove` reports in `src/lib/data/desk-notes.json` are the other case: `readAs` counts
+them *where they're filed, footnoted under it*. They are in the right ticket and read the wrong
+way, so they stay inside the parser count and are footnoted there. The problem is real, and the
+added page names it and quotes every one of those reports — but it is not a cause, and the kb
+gives it no ticket slot.
 
 ## Where the numbers come from
 
-Every count is produced by the knowledge base's own logic, in
-`src/lib/kb/causes.ts` of the export, not by a rule invented here:
+Every count is produced by the knowledge base's own logic, not by a rule invented here:
 
-- `uniqueById` first. The export ships **427 report objects for 412 reports**, because its
-  export pages overlap. The duplicate copies are identical.
-- `causeOf(report, tenant)` for the first two problems. It asks the platform whether the
-  tenant's locale writes the day first, and it treats a report through a `booking-v3` form as a
-  different cause.
-- `desk-notes.json` and `readAs` for the third. Those five ids are the desk's own list, and
-  `readAs` is how its view reports them: counted where they are filed, footnoted under it.
+- `uniqueById` first. The export ships **427 report objects for 412 reports**, because its export
+  pages overlap. The duplicate copies are identical.
+- `causeOf(report, tenant)` for the two causes. It asks the platform whether the tenant's locale
+  writes the day first, and treats a report through a `booking-v3` form as a different cause.
+- `readAs` with `desk-notes.json` for the third problem, which is how the desk's own view reports
+  it: counted where it is filed, footnoted under it.
 
-Do not count by `meta.intakeTag`. Intake guesses the cause from the reporter's browser the
-moment the report arrives, and its guess disagrees with the cause the report belongs to in
-**38 of the 412**.
+Do not count by `meta.intakeTag`. Intake guesses the cause from the reporter's browser the moment
+the report arrives, and its guess disagrees with the cause the report belongs to for a sizeable
+minority of them, which `SplitTable` prints.
 
 ## How the rendered page was produced
 
-The export ships `src/` only: no `package.json`, no build setup, so mdsvex and Svelte cannot
-run against it. The HTML in `rendered/` was produced by a renderer that reads the `.svx` source
+The export ships `src/` only: no `package.json`, no build setup, so mdsvex and Svelte cannot run
+against it. The HTML in `rendered/` was produced by a renderer that reads the `.svx` source
 itself, so the words have one source and the two files cannot drift apart. The frame, the
 component markup and the cause logic are copied from the export verbatim where they are logic.
 Build the `.svx` in the real knowledge base and the page is the same page; the HTML here is for
 reading it without a build.
-
-## What was recorded in the kb, and why there
-
-Filing an issue puts a ticket on the tracker. It does not put it on the kb, and the kb is where
-this desk records which ticket a report belongs to: `ticketCause` reads that off `mergedInto`,
-and `CauseTable` prints *no ticket of its own* for any cause whose reports still point somewhere
-else. So the 33 reports of the `hint` cause now carry `mergedInto: 2`.
-
-That is a pointer, not a copy. The lesson this Challenge belongs to is explicit about the
-difference: issue trackers hold knowledge that *shouldn't be copied to the knowledge base* but
-can be distilled into it. So the ticket's number goes in, and the ticket's content stays on the
-tracker, where #2 holds it.
-
-Nothing else in the export changed. The original is one `git revert` away, and the untouched
-export is still the file the counts were first read from.

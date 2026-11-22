@@ -15,9 +15,9 @@ signature: v1.eyJzdWIiOiI0Njk4IiwiYXVkIjoiY2hhbGxlbmdlOndoYXQtaXQtc2hvd3MiLCJpYX
 </script>
 
 [#4471](/kb/incidents/4471) says one issue, one fix queued. The reports merged into it describe
-three, and they need three fixes. Nobody mis-read anything: the merge rule never reads a body,
-so a ticket can only ever be as sharp as its subject lines, and these subject lines are the same
-for all three.
+more than one problem, and each needs a fix of its own. Nobody mis-read anything: the merge rule
+never reads a body, so a ticket can only ever be as sharp as its subject lines, and these subject
+lines are shared across all of them.
 
 <Callout kind="warn">
 Fixing the parser closes most of this ticket and leaves two problems open, one of which the fix
@@ -28,7 +28,10 @@ can make worse.
 
 <SplitTable ticket={4471} />
 
-## Why the third one is not a swap
+Every number above is counted by the component from the desk's own export, with the desk's own
+rules. Nothing in the words below restates one.
+
+## Why the one-day group is not a swap
 
 A swapped date and a date one day out look alike in a subject line and nothing alike in a body.
 A swap turns 7 April into 4 July: the two numbers trade places. These reports have no second
@@ -42,71 +45,64 @@ number to trade:
 - `R-41236` — the invite arrived before the booking was made.
 
 Two timezones disagreeing about which day it is, and one month behaving differently from the
-others, point at an offset, not at a parser. The desk already saw it: these five ids are the
+others, point at an offset, not at a parser. The desk already saw it: those ids are the
 `oneDayMove` list in `desk-notes.json`. The kb files them under the cause their tenant implies,
 because `causeOf` reads the tenant and the channel and never the words.
 
-## Why the second one survives the fix
+## Why the hint group survives the parser fix
 
-`booking-v2` prints `DD/MM/YYYY` under its date field, and `booking-v3` prints `MM/DD/YYYY`.
-Three tenants run `booking-v3` and all three write the day first. Their people type the month
-first, because the hint tells them to, and the form stores it the tenant's way. Every report in
-this group came through the form and through no other channel.
+`booking-v2` prints `DD/MM/YYYY` under its date field, and `booking-v3` prints `MM/DD/YYYY`. The
+tenants on `booking-v3` all write the day first. Their people type the month first, because the
+hint tells them to, and the form stores it the tenant's way. Every report in this group came
+through the form and through no other channel.
 
 So these dates are wrong in the opposite direction from the rest of the ticket. Teach the parser
 to read each tenant's order and this group gets read the tenant's way too, which is not the way it
 was typed. The hint and the reader have to agree first; either the hint matches how the form
 reads, or the form reads what the hint promised.
 
-## What the ticket's own table had been showing
+## What the ticket's own table already shows
 
-The incident page claimed one cause in its words, and its own table, built from the data at
-render time, had been printing two: the second flagged *not this ticket — no ticket of its own*,
-since before this page existed. The table was right and the words were not.
-
-That row is gone now, because the reports behind it were moved to the ticket they should always
-have had. The table below is the ticket as it stands, one cause and its footnote, and that is
-the whole point: nothing here was written by hand. Move the reports and the page tells the truth
-by itself.
+The incident page claims one cause in its words. Its own table, built from the data at render
+time, prints two, and flags the second as *not this ticket — no ticket of its own*. It has been
+doing that since before this page existed. The table was right and the words were not:
 
 <CauseTable ticket={4471} />
 
 ## The tickets
 
-One cause was in the wrong ticket, and `causes.ts` says which: *a ticket is the cause most of
-its reports share; **the rest were merged into the wrong place***. `ticketCause` reads #4471's
-cause off its reports and gets `parser`, so the reports of the `hint` cause are the ones in the
-wrong place. The desk's own table has been printing it beside that row for months: *not this
-ticket — no ticket of its own*.
+A ticket covers a cause. `causes.ts` says which reports are in the wrong one: *a ticket is the
+cause most of its reports share; the rest were merged into the wrong place*. `ticketCause` reads
+#4471's cause off its reports and gets `parser`, so the `hint` reports are the ones in the wrong
+place, and the table above says so in its own words.
 
-So one ticket was missing, and this work filed it.
-
-- `parser` — [#4471](/kb/incidents/4471) is that ticket already
-- `hint` — [ticket #2](https://github.com/BlackShaira/kurs/issues/2), filed by this work, 33 reports
-- `one-day` — no ticket of its own, and it needs none. These reports are not in the wrong
-  place: `readAs` says they are *counted where they're filed, footnoted under it*, so they stay
-  inside #4471's count and the desk keeps them in `desk-notes.json`. The problem is real and
-  this page names it; the reports are already where this kb files them.
+- `parser` — [ticket #1](https://github.com/BlackShaira/kurs/issues/1), and on the kb it is
+  [#4471](/kb/incidents/4471) itself
+- `hint` — [ticket #2](https://github.com/BlackShaira/kurs/issues/2), the ticket this cause
+  never had
+- `one-day` — no ticket. These reports are not in the wrong ticket, so `readAs` keeps them
+  counted where they are filed and footnoted there, which is what the table above shows. The
+  problem is named here instead, and the desk's own list of it is in `desk-notes.json`.
 
 ## What to do
 
-1. Fix the three in three changes, not one. #4471 stays the parser ticket, and its fix closes
-   the `parser` row and nothing else.
+1. Fix them in three changes, not one. #4471 stays the parser ticket, and its fix closes the
+   `parser` row apart from the one-day reports counted inside it.
 2. Ship the `hint` fix in the same release as the parser fix. On its own, each of the two moves
    that group from wrong to differently wrong.
-3. Leave the counts where the desk files them. The five one-day reports stay inside #4471's
-   count and are footnoted there, because that is how this kb counts. They need no ticket of
-   their own: they are in the right ticket, read the wrong way.
+3. Leave the counts where the desk files them, and leave the reports where they are. The ticket
+   a report belongs to is `mergedInto`, and moving a report out of #4471 would take it out of the
+   desk's view of #4471 altogether.
 4. Decision [0001](/kb/decisions/0001-dedupe-by-subject) merges on the subject line alone and
    accepts that one bug can land in several tickets. The reverse happened here. A decision is
    never edited once accepted, so this needs a new record, not a correction of that one.
 
 ## What this page does not settle
 
-- Which offset causes the one-day group. Five reports name two timezones and one month; that is
-  enough to separate the problem, not enough to name its cause.
-- Whether more than five reports belong to the one-day group. The five are the desk's own list.
-  Pattern matching over the bodies finds four of them and misses `R-41236`, so the real number is
-  a question for whoever reads all 412 bodies, not for a regular expression.
+- Which offset causes the one-day group. The reports quoted above name two timezones and one
+  month; that is enough to separate the problem, not enough to name its cause.
+- Whether more reports belong to the one-day group than the desk listed. The list is the desk's
+  own. Pattern matching over the bodies finds four of them and misses `R-41236`, so the real
+  number is a question for whoever reads every body, not for a regular expression.
 
 <RenderStamp {signature} />

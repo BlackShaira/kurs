@@ -1,55 +1,36 @@
 <script lang="ts">
   import reports from '#lib/data/reports-4471.json';
   import notes from '#lib/data/desk-notes.json';
-  import { causeOf, uniqueById, type Report } from '#lib/kb/causes';
+  import { groupByCause, readAs, ticketCause, uniqueById, type Report } from '#lib/kb/causes';
   import { tenantOf } from '#lib/kb/locales';
 
-  // What the ticket held, and where those reports are now.
+  // One row per problem the reports describe, counted the way this kb counts.
   //
-  // This reads every report in the export, not only the ones that still point at this
-  // ticket, because that is the point of the page: all of them arrived here, and one
-  // cause has since been moved to the ticket it should have had. `CauseTable` shows the
-  // ticket as it stands; this shows the split that produced it.
+  // The two cause rows come from `groupByCause`, so they are the desk's own view of its
+  // own export. The third row is not a cause: `causes.ts` separates reports that were
+  // "merged into the wrong place" from reports the desk "read differently", and `readAs`
+  // counts the second kind where they are filed and footnotes them there. So the third
+  // row is a subset of the row above it, and the two cause rows are what add up.
   //
-  // The third row is not a cause. `causes.ts` separates two cases: reports whose cause is
-  // not the ticket's cause were "merged into the wrong place", and reports the desk read
-  // differently are "counted where they're filed, footnoted under it". The first case got
-  // a ticket. The second stays where it is, and is a subset of the row above it.
+  // The last column is the kb's own verdict, printed by the same rule `CauseTable` uses:
+  // the cause this ticket is, or that this cause has no ticket of its own. Which issue
+  // covers which cause is not computable from the kb, so the page says that in words.
   let { ticket }: { ticket: number } = $props();
 
   const all = $derived(uniqueById(reports as Report[]));
+  const merged = $derived(all.filter((r) => r.mergedInto === ticket));
+  const groups = $derived(groupByCause(merged, tenantOf));
+  const owner = $derived(ticketCause(groups, ticket));
+  const counted = $derived(groups.reduce((n, g) => n + g.reports.length, 0));
+  const oneDay = $derived(merged.filter((r) => notes.oneDayMove.includes(r.id)));
+  const oneDayUnder = $derived(
+    groups.filter((g) => readAs(g, notes.oneDayMove) > 0).map((g) => g.cause).join(', '),
+  );
 
-  type Row = { key: string; what: string; reports: Report[]; subsetOf?: string };
-
-  const rows = $derived.by<Row[]>(() => {
-    const byCause = new Map<string, Report[]>();
-    for (const r of all) {
-      const c = causeOf(r, tenantOf(r)) ?? 'unplaced';
-      byCause.set(c, [...(byCause.get(c) ?? []), r]);
-    }
-    const what: Record<string, string> = {
-      parser: 'the shared parser reads every date month first',
-      hint: "booking-v3's date hint says MM/DD/YYYY and the form reads it the tenant's way",
-    };
-    const out: Row[] = [...byCause.entries()]
-      .sort((a, b) => b[1].length - a[1].length)
-      .map(([key, rs]) => ({ key, what: what[key] ?? 'no cause the rules can name', reports: rs }));
-    const oneDay = all.filter((r) => notes.oneDayMove.includes(r.id));
-    if (oneDay.length) {
-      const host = out.find((row) => row.reports.some((r) => oneDay.includes(r)))?.key;
-      out.push({
-        key: 'one-day',
-        what: 'the date moves by one day, which is no swap at all',
-        reports: oneDay,
-        subsetOf: host,
-      });
-    }
-    return out;
-  });
-
-  const counted = $derived(rows.filter((r) => !r.subsetOf).reduce((n, r) => n + r.reports.length, 0));
-  const ticketsOf = (rs: Report[]) =>
-    [...new Set(rs.map((r) => r.mergedInto))].sort((a, b) => Number(a) - Number(b));
+  const WHAT: Record<string, string> = {
+    parser: 'the shared parser reads every date month first',
+    hint: "booking-v3's date hint says MM/DD/YYYY and the form reads it the tenant's way",
+  };
   const channelsIn = (rs: Report[]) =>
     Object.entries(rs.reduce<Record<string, number>>((n, r) => ({ ...n, [r.channel]: (n[r.channel] ?? 0) + 1 }), {}))
       .sort((a, b) => b[1] - a[1])
@@ -59,51 +40,55 @@
     const days = rs.map((r) => r.receivedAt.slice(0, 10)).sort();
     return `${days[0]} → ${days[days.length - 1]}`;
   };
-  const taggedWrong = $derived(
-    rows
-      .filter((r) => !r.subsetOf)
-      .reduce((n, row) => n + row.reports.filter((r) => r.meta.intakeTag !== row.key).length, 0),
-  );
 </script>
 
 <p class="sum">
-  <strong>{counted}</strong> reports arrived in #{ticket} ·
-  <strong>{rows.filter((r) => !r.subsetOf).length}</strong> causes ·
-  <strong>{rows.length}</strong> problems ·
-  {counted === all.length ? 'every report counted once' : `${all.length} in the export — this does not add up`}
+  <strong>{counted}</strong> reports merged into #{ticket} ·
+  <strong>{groups.length}</strong> {groups.length === 1 ? 'cause' : 'causes'} ·
+  <strong>{groups.length + (oneDay.length ? 1 : 0)}</strong> problems ·
+  {counted === merged.length ? 'every report counted once' : `${merged.length} in the ticket — this does not add up`}
 </p>
 
 <table>
   <thead>
-    <tr><th>problem</th><th>reports</th><th>ticket</th><th>what it is</th><th>channels</th><th>tenants</th><th>seen</th></tr>
+    <tr><th>problem</th><th>reports</th><th>on the kb</th><th>what it is</th><th>channels</th><th>tenants</th><th>seen</th></tr>
   </thead>
   <tbody>
-    {#each rows as row (row.key)}
-      <tr class:subset={row.subsetOf}>
-        <td><code>{row.key}</code></td>
-        <td class="n">{row.reports.length}</td>
-        <td>
-          {#each ticketsOf(row.reports) as t, i (t)}{i ? ', ' : ''}#{t}{/each}
-          {#if row.subsetOf}<span class="muted"> — inside <code>{row.subsetOf}</code></span>{/if}
-        </td>
-        <td>{row.what}</td>
-        <td class="muted">{channelsIn(row.reports)}</td>
-        <td class="n">{new Set(row.reports.map((r) => r.tenant)).size}</td>
-        <td class="muted">{seen(row.reports)}</td>
+    {#each groups as g (g.cause)}
+      <tr>
+        <td><code>{g.cause}</code></td>
+        <td class="n">{g.reports.length}</td>
+        <td>{g.cause === owner ? `#${ticket}` : 'no ticket of its own'}</td>
+        <td>{WHAT[g.cause] ?? 'no cause the rules can name'}</td>
+        <td class="muted">{channelsIn(g.reports)}</td>
+        <td class="n">{g.tenants}</td>
+        <td class="muted">{seen(g.reports)}</td>
       </tr>
     {/each}
+    {#if oneDay.length}
+      <tr class="subset">
+        <td><code>one-day</code></td>
+        <td class="n">{oneDay.length}</td>
+        <td>counted under <code>{oneDayUnder}</code></td>
+        <td>the date moves by one day, which is no swap at all</td>
+        <td class="muted">{channelsIn(oneDay)}</td>
+        <td class="n">{new Set(oneDay.map((r) => r.tenant)).size}</td>
+        <td class="muted">{seen(oneDay)}</td>
+      </tr>
+    {/if}
   </tbody>
 </table>
 
 <p class="note">
-  The <code>one-day</code> row is a subset of the row it sits under, not a share of its own, so the
-  causes above it are what add up. Those reports are in the right ticket and read the wrong way:
-  <code>readAs</code> counts them where they are filed and footnotes them there, and the desk keeps
-  the list in <code>desk-notes.json</code>.
+  The <code>one-day</code> row is a subset of the row it sits under, not a share of its own, so
+  the cause rows are what add up. Those reports are in the right ticket and read the wrong way:
+  <code>readAs</code> counts them where they are filed and footnotes them there, and the desk
+  keeps the list in <code>desk-notes.json</code>.
 </p>
 
 <p class="note">
-  Intake's own tag disagrees with the cause the report belongs to in <strong>{taggedWrong}</strong>
+  Intake's own tag disagrees with the cause the report belongs to in
+  <strong>{groups.reduce((n, g) => n + g.reports.filter((r) => r.meta.intakeTag !== g.cause).length, 0)}</strong>
   of these {counted} reports, because intake guesses from the reporter's browser and the cause
   depends on the tenant. Counting by <code>meta.intakeTag</code> gives the wrong number for every
   row above.
