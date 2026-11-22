@@ -52,13 +52,14 @@ aside.warn { border-color: var(--warn); background: var(--warn-bg); }
 <p><a href="/kb/incidents/4471">#4471</a> says one issue, one fix queued. The reports merged into it describe three, and they need three fixes. Nobody mis-read anything: the merge rule never reads a body, so a ticket can only ever be as sharp as its subject lines, and these subject lines are the same for all three.</p>
 <aside class="warn">Fixing the parser closes most of this ticket and leaves two problems open, one of which the fix can make worse.</aside>
 <h2>What the reports describe</h2>
-<p class="sum"><strong>412</strong> reports merged into #4471 · <strong>3</strong> separate problems · every report counted once</p>
-<table><thead><tr><th>problem</th><th>reports</th><th>what it is</th><th>channels</th><th>tenants</th><th>seen</th></tr></thead><tbody>
-<tr><td><code>parser</code></td><td class="n">374</td><td>the shared parser reads every date month first</td><td class="muted">app ×202 · email ×147 · form ×25</td><td class="n">11</td><td class="muted">2026-04-01 → 2026-10-04</td></tr>
-<tr><td><code>hint</code></td><td class="n">33</td><td>booking-v3's date hint says MM/DD/YYYY and the form reads it the tenant's way</td><td class="muted">form ×33</td><td class="n">3</td><td class="muted">2026-04-17 → 2026-09-22</td></tr>
-<tr><td><code>one-day</code></td><td class="n">5</td><td>the date moves by one day, which is no swap at all</td><td class="muted">email ×3 · app ×2</td><td class="n">5</td><td class="muted">2026-04-02 → 2026-10-04</td></tr>
+<p class="sum"><strong>412</strong> reports merged into #4471 · <strong>2</strong> causes by the desk's view · <strong>3</strong> problems that need a ticket · every report counted once</p>
+<table><thead><tr><th>problem</th><th>reports</th><th>what it is</th><th>channels</th><th>tagged as</th><th>tenants</th><th>seen</th></tr></thead><tbody>
+<tr><td><code>parser</code></td><td class="n">379</td><td>the shared parser reads every date month first</td><td class="muted">app ×204 · email ×150 · form ×25</td><td class="muted">parser ×356 · hint ×23</td><td class="n">11</td><td class="muted">2026-04-01 → 2026-10-04</td></tr>
+<tr><td><code>hint</code></td><td class="n">33</td><td>booking-v3's date hint says MM/DD/YYYY and the form reads it the tenant's way</td><td class="muted">form ×33</td><td class="muted">hint ×18 · parser ×15</td><td class="n">3</td><td class="muted">2026-04-17 → 2026-09-22</td></tr>
+<tr class="subset"><td><code>one-day</code></td><td class="n">5</td><td>the date moves by one day, which is no swap at all</td><td class="muted" colspan="3">counted above under <code>parser</code>, by tenant, as the desk files them</td><td class="muted">from <code>desk-notes.json</code></td></tr>
 </tbody></table>
-<p class="note">Intake's own tag disagrees with the problem the report belongs to in <strong>43</strong> of these 412 reports, because intake guesses from the reporter's browser and the problem depends on the tenant. Counting by <code>meta.intakeTag</code> gives the wrong number for every row above.</p>
+<p class="note">The <code>one-day</code> row is not a fourth share of the 412. Those 5 reports are already inside the <code>parser</code> count, because the desk files a report under the cause its tenant implies and footnotes the ones it read differently. They need a ticket all the same: no fix is tracked against them today.</p>
+<p class="note">Intake's own tag disagrees with the cause the report belongs to in <strong>38</strong> of these 412 reports, because intake guesses from the reporter's browser and the cause depends on the tenant. Counting by <code>meta.intakeTag</code> gives the wrong number for every row above.</p>
 <p class="note">The export ships 427 report objects for 412 reports: its pages overlap, so some arrive twice. Every count here is after <code>uniqueById</code>.</p>
 <h2>Why the third one is not a swap</h2>
 <p>A swapped date and a date one day out look alike in a subject line and nothing alike in a body. A swap turns 7 April into 4 July: the two numbers trade places. These reports have no second number to trade:</p>

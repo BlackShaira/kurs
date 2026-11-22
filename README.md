@@ -10,11 +10,15 @@ This repo holds the three tickets and one page for the desk's knowledge base.
 
 | Problem | Reports | Why it is its own problem |
 |---|---|---|
-| The parser reads every date month first | 374 | all 11 tenants write the day first, so day and month trade places |
+| The parser reads every date month first | 379 | all 11 tenants write the day first, so day and month trade places |
 | `booking-v3` asks for `MM/DD/YYYY` and stores the date day-first | 33 | only through the form, only at the 3 tenants on that form; typed month-first on purpose |
-| Invites land one day out | 5 | no second number to trade; one meeting reached two timezones on two different days |
+| Invites land one day out | 5, inside the 379 | no second number to trade; one meeting reached two timezones on two different days |
 
-374 + 33 + 5 = 412, so every report is counted once and none is counted twice.
+Counted the way the desk's own view counts, as it was exported. `groupByCause` splits the
+ticket into its two causes, 379 and 33, which add up to 412: every report counted once. The
+third problem is the `oneDayMove` list in `desk-notes.json`, five reports the desk read
+differently and kept filed under the cause their tenant implies. They are a problem of their
+own and need a ticket, and they stay inside the 379, because that is how the desk counts them.
 
 They are filed as the issues in this repo, one per problem, each with its count.
 
@@ -40,11 +44,12 @@ Every count is produced by the knowledge base's own logic, in
 - `causeOf(report, tenant)` for the first two problems. It asks the platform whether the
   tenant's locale writes the day first, and it treats a report through a `booking-v3` form as a
   different cause.
-- `desk-notes.json` for the third. Those five ids are the desk's own list.
+- `desk-notes.json` and `readAs` for the third. Those five ids are the desk's own list, and
+  `readAs` is how its view reports them: counted where they are filed, footnoted under it.
 
 Do not count by `meta.intakeTag`. Intake guesses the cause from the reporter's browser the
-moment the report arrives, and its guess disagrees with the problem the report belongs to in
-**43 of the 412**.
+moment the report arrives, and its guess disagrees with the cause the report belongs to in
+**38 of the 412**.
 
 ## How the rendered page was produced
 
