@@ -68,9 +68,9 @@ own* since before this page existed:
 
 ## The tickets
 
-One ticket per row of the table above, each carrying that row's count.
+Every row of the table above has a ticket now, carrying that row's count.
 
-The `parser` row already has a ticket: it is [#4471](/kb/incidents/4471) itself. `ticketCause`
+The `parser` row already had one: it is [#4471](/kb/incidents/4471) itself. `ticketCause`
 in `#lib/kb/causes` reads the ticket's cause off its reports, and for #4471 that cause is
 `parser`. So this work filed a ticket only for the rows that had none, and the desk's own table
 has been saying which those are: it prints *not this ticket — no ticket of its own* beside them.
@@ -81,10 +81,14 @@ has been saying which those are: it prints *not this ticket — no ticket of its
 
 ## What to do
 
-1. Open one ticket per row of the table above, each with its own count.
-2. Leave #4471 as the parser ticket and move the other two counts out of it, so no fix is
-   reported against reports it does not fix.
-3. Decision [0001](/kb/decisions/0001-dedupe-by-subject) merges on the subject line alone and
+1. Fix the three in three changes, not one. #4471 stays the parser ticket, and its fix closes
+   the `parser` row and nothing else.
+2. Ship the `hint` fix in the same release as the parser fix. On its own, each of the two moves
+   that group from wrong to differently wrong.
+3. Leave the counts where the desk files them. The five one-day reports stay inside #4471's
+   count and are footnoted there, because that is how this kb counts; ticket #3 tracks the
+   problem without moving the reports.
+4. Decision [0001](/kb/decisions/0001-dedupe-by-subject) merges on the subject line alone and
    accepts that one bug can land in several tickets. The reverse happened here. A decision is
    never edited once accepted, so this needs a new record, not a correction of that one.
 

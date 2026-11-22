@@ -23,7 +23,9 @@ Known. One issue, one fix queued.
 </Callout>
 
 <Callout kind="warn">
-Three problems, not one. The reports merged here describe a parser that reads every date month
+Three problems, not one. <b>This supersedes the line above</b>, which is what the desk believed
+while the reports were only ever read by their subject lines. The reports merged here describe a
+parser that reads every date month
 first, a <code>booking-v3</code> date hint that disagrees with how the form stores the date, and
 invites that land one day out. This ticket is the parser one, and fixing the parser leaves the
 other two open. Each of them now has a ticket of its own:

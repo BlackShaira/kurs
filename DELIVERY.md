@@ -1,20 +1,22 @@
 # What ticket #4471 actually holds
 
 This repo is the support desk's knowledge base, exactly as it was exported on 2026-10-04,
-with one page added to it: the page about what `#4471` really holds. The kb is here so the
+with one page added to it, about what `#4471` really holds, and one callout added to the
+desk's own page for that ticket, so a reader of #4471 reaches the new page. The kb is here so the
 added page sits in the base it belongs to, with its imports resolving and its tables built
 from the desk's own data, the way the desk would see it.
 
 | Path | What it is |
 |---|---|
-| `README.md`, `src/` | the kb as exported, unchanged |
+| `README.md`, `src/` | the kb as exported, byte for byte, apart from the one file below |
+| `src/routes/kb/incidents/4471/+page.svx` | the desk's own incident page, with one callout added: it points at the page below and at the tickets. Nothing in it was removed or rewritten |
 | `src/routes/kb/incidents/4471/split/+page.svx` | the page added by this work |
 | `src/lib/kb/SplitTable.svelte` | the component that page uses, added by this work |
 | `rendered/kb/incidents/4471/split/index.html` | that page as the desk will see it |
 | `DELIVERY.md` | this file |
 
 The desk's ticket `#4471` is the kb page `src/routes/kb/incidents/4471/+page.svx`, and its
-reports are `src/lib/data/reports-4471.json`. The three tickets this work filed are the issues
+reports are `src/lib/data/reports-4471.json`. The tickets this work filed are the open issues
 of this repo, and each one names that page and that data.
 
 ## The three problems

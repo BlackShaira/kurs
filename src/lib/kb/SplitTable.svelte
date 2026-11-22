@@ -39,7 +39,7 @@
 <p class="sum">
   <strong>{merged.length}</strong> reports merged into #{ticket} ·
   <strong>{groups.length}</strong> {groups.length === 1 ? 'cause' : 'causes'} by the desk's view ·
-  <strong>{groups.length + (oneDayTotal ? 1 : 0)}</strong> problems that need a ticket ·
+  <strong>{groups.length + (oneDayTotal ? 1 : 0)}</strong> problems in them ·
   {counted === merged.length ? 'every report counted once' : `${counted} counted — this does not add up`}
 </p>
 
