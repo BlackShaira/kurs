@@ -68,13 +68,16 @@ own* since before this page existed:
 
 ## The tickets
 
-One ticket per row of the table above, each carrying that row's count. They are the desk's
-tickets, filed as issues, and each one links back to [#4471](/kb/incidents/4471), the ticket it
-splits:
+One ticket per row of the table above, each carrying that row's count.
 
-- [ticket #1](https://github.com/BlackShaira/kurs/issues/1) — the `parser` row
-- [ticket #2](https://github.com/BlackShaira/kurs/issues/2) — the `hint` row
-- [ticket #3](https://github.com/BlackShaira/kurs/issues/3) — the `one-day` row
+The `parser` row already has a ticket: it is [#4471](/kb/incidents/4471) itself. `ticketCause`
+in `#lib/kb/causes` reads the ticket's cause off its reports, and for #4471 that cause is
+`parser`. So this work filed a ticket only for the rows that had none, and the desk's own table
+has been saying which those are: it prints *not this ticket — no ticket of its own* beside them.
+
+- `parser` — [#4471](/kb/incidents/4471), the ticket this page splits
+- `hint` — [ticket #2](https://github.com/BlackShaira/kurs/issues/2), filed by this work
+- `one-day` — [ticket #3](https://github.com/BlackShaira/kurs/issues/3), filed by this work
 
 ## What to do
 

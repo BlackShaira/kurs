@@ -25,13 +25,12 @@ Known. One issue, one fix queued.
 <Callout kind="warn">
 Three problems, not one. The reports merged here describe a parser that reads every date month
 first, a <code>booking-v3</code> date hint that disagrees with how the form stores the date, and
-invites that land one day out. Each has a ticket of its own now, and fixing the parser alone
-leaves two of them open. Read
+invites that land one day out. This ticket is the parser one, and fixing the parser leaves the
+other two open. Each of them now has a ticket of its own:
+<a href="https://github.com/BlackShaira/kurs/issues/2">#2</a> for the date hint and
+<a href="https://github.com/BlackShaira/kurs/issues/3">#3</a> for the one-day move. Read
 <a href="/kb/incidents/4471/split">what this ticket actually holds</a>, with the counts built
-from the data, and the tickets it splits into:
-<a href="https://github.com/BlackShaira/kurs/issues/1">#1</a>,
-<a href="https://github.com/BlackShaira/kurs/issues/2">#2</a> and
-<a href="https://github.com/BlackShaira/kurs/issues/3">#3</a>.
+from the data.
 </Callout>
 
 ## What was merged

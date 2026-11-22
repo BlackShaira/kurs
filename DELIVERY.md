@@ -31,7 +31,18 @@ third problem is the `oneDayMove` list in `desk-notes.json`, five reports the de
 differently and kept filed under the cause their tenant implies. They are a problem of their
 own and need a ticket, and they stay inside the 379, because that is how the desk counts them.
 
-They are filed as the issues in this repo, one per problem, each with its count.
+The `parser` row already had a ticket: `#4471` itself. `ticketCause` in `src/lib/kb/causes.ts`
+reads a ticket's cause off its reports, and for #4471 that cause is `parser`, which is why the
+desk's own table prints *not this ticket — no ticket of its own* beside the other rows. So this
+work filed a ticket only for the rows that had none:
+
+| Problem | Ticket |
+|---|---|
+| `parser` | `#4471`, on the kb |
+| `hint` | issue #2 of this repo |
+| `one-day` | issue #3 of this repo |
+
+Issue #1 of this repo was filed for `parser` and is closed: it duplicated #4471.
 
 ## The page
 
