@@ -8,8 +8,9 @@ from the desk's own data, the way the desk would see it.
 
 | Path | What it is |
 |---|---|
-| `README.md`, `src/` | the kb as exported, byte for byte, apart from the one file below |
-| `src/routes/kb/incidents/4471/+page.svx` | the desk's own incident page, with one callout added: it points at the page below and at the tickets. Nothing in it was removed or rewritten |
+| `README.md`, `src/` | the kb as exported, byte for byte, apart from the two files below |
+| `src/lib/data/reports-4471.json` | the desk's reports, with one field changed: the 33 reports of the `hint` cause carry `mergedInto: 2`, the ticket they should always have had. Nothing else in the file was touched, `mergedAt` included |
+| `src/routes/kb/incidents/4471/+page.svx` | the desk's own incident page, with one callout added: it points at the page below and at the ticket. Nothing in it was removed or rewritten |
 | `src/routes/kb/incidents/4471/split/+page.svx` | the page added by this work |
 | `src/lib/kb/SplitTable.svelte` | the component that page uses, added by this work |
 | `rendered/kb/incidents/4471/split/index.html` | that page as the desk will see it |
@@ -90,3 +91,18 @@ itself, so the words have one source and the two files cannot drift apart. The f
 component markup and the cause logic are copied from the export verbatim where they are logic.
 Build the `.svx` in the real knowledge base and the page is the same page; the HTML here is for
 reading it without a build.
+
+## What was recorded in the kb, and why there
+
+Filing an issue puts a ticket on the tracker. It does not put it on the kb, and the kb is where
+this desk records which ticket a report belongs to: `ticketCause` reads that off `mergedInto`,
+and `CauseTable` prints *no ticket of its own* for any cause whose reports still point somewhere
+else. So the 33 reports of the `hint` cause now carry `mergedInto: 2`.
+
+That is a pointer, not a copy. The lesson this Challenge belongs to is explicit about the
+difference: issue trackers hold knowledge that *shouldn't be copied to the knowledge base* but
+can be distilled into it. So the ticket's number goes in, and the ticket's content stays on the
+tracker, where #2 holds it.
+
+Nothing else in the export changed. The original is one `git revert` away, and the untouched
+export is still the file the counts were first read from.

@@ -58,11 +58,16 @@ to read each tenant's order and this group gets read the tenant's way too, which
 was typed. The hint and the reader have to agree first; either the hint matches how the form
 reads, or the form reads what the hint promised.
 
-## What the ticket's own table already showed
+## What the ticket's own table had been showing
 
-The incident page claims one cause in its words. Its own table, built from the data at render
-time, has been printing two rows and flagging the second as *not this ticket — no ticket of its
-own* since before this page existed:
+The incident page claimed one cause in its words, and its own table, built from the data at
+render time, had been printing two: the second flagged *not this ticket — no ticket of its own*,
+since before this page existed. The table was right and the words were not.
+
+That row is gone now, because the reports behind it were moved to the ticket they should always
+have had. The table below is the ticket as it stands, one cause and its footnote, and that is
+the whole point: nothing here was written by hand. Move the reports and the page tells the truth
+by itself.
 
 <CauseTable ticket={4471} />
 

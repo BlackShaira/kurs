@@ -52,13 +52,13 @@ aside.warn { border-color: var(--warn); background: var(--warn-bg); }
 <p><a href="/kb/incidents/4471">#4471</a> says one issue, one fix queued. The reports merged into it describe three, and they need three fixes. Nobody mis-read anything: the merge rule never reads a body, so a ticket can only ever be as sharp as its subject lines, and these subject lines are the same for all three.</p>
 <aside class="warn">Fixing the parser closes most of this ticket and leaves two problems open, one of which the fix can make worse.</aside>
 <h2>What the reports describe</h2>
-<p class="sum"><strong>412</strong> reports merged into #4471 · <strong>2</strong> causes by the desk's view · <strong>3</strong> problems in them · every report counted once</p>
-<table><thead><tr><th>problem</th><th>reports</th><th>what it is</th><th>channels</th><th>tagged as</th><th>tenants</th><th>seen</th></tr></thead><tbody>
-<tr><td><code>parser</code></td><td class="n">379</td><td>the shared parser reads every date month first</td><td class="muted">app ×204 · email ×150 · form ×25</td><td class="muted">parser ×356 · hint ×23</td><td class="n">11</td><td class="muted">2026-04-01 → 2026-10-04</td></tr>
-<tr><td><code>hint</code></td><td class="n">33</td><td>booking-v3's date hint says MM/DD/YYYY and the form reads it the tenant's way</td><td class="muted">form ×33</td><td class="muted">hint ×18 · parser ×15</td><td class="n">3</td><td class="muted">2026-04-17 → 2026-09-22</td></tr>
-<tr class="subset"><td><code>one-day</code></td><td class="n">5</td><td>the date moves by one day, which is no swap at all</td><td class="muted" colspan="3">counted above under <code>parser</code>, by tenant, as the desk files them</td><td class="muted">from <code>desk-notes.json</code></td></tr>
+<p class="sum"><strong>412</strong> reports arrived in #4471 · <strong>2</strong> causes · <strong>3</strong> problems · every report counted once</p>
+<table><thead><tr><th>problem</th><th>reports</th><th>ticket</th><th>what it is</th><th>channels</th><th>tenants</th><th>seen</th></tr></thead><tbody>
+<tr><td><code>parser</code></td><td class="n">379</td><td>#4471</td><td>the shared parser reads every date month first</td><td class="muted">app ×204 · email ×150 · form ×25</td><td class="n">11</td><td class="muted">2026-04-01 → 2026-10-04</td></tr>
+<tr><td><code>hint</code></td><td class="n">33</td><td>#2</td><td>booking-v3's date hint says MM/DD/YYYY and the form reads it the tenant's way</td><td class="muted">form ×33</td><td class="n">3</td><td class="muted">2026-04-17 → 2026-09-22</td></tr>
+<tr class="subset"><td><code>one-day</code></td><td class="n">5</td><td>#4471 <span class="muted">— inside <code>parser</code></span></td><td>the date moves by one day, which is no swap at all</td><td class="muted">email ×3 · app ×2</td><td class="n">5</td><td class="muted">2026-04-02 → 2026-10-04</td></tr>
 </tbody></table>
-<p class="note">The <code>one-day</code> row is not a fourth share of the 412. Those 5 reports are already inside the <code>parser</code> count, because the desk files a report under the cause its tenant implies and footnotes the ones it read differently. They need a ticket all the same: no fix is tracked against them today.</p>
+<p class="note">The <code>one-day</code> row is a subset of the row it sits under, not a share of its own, so the causes above it are what add up. Those reports are in the right ticket and read the wrong way: <code>readAs</code> counts them where they are filed and footnotes them there, and the desk keeps the list in <code>desk-notes.json</code>.</p>
 <p class="note">Intake's own tag disagrees with the cause the report belongs to in <strong>38</strong> of these 412 reports, because intake guesses from the reporter's browser and the cause depends on the tenant. Counting by <code>meta.intakeTag</code> gives the wrong number for every row above.</p>
 <p class="note">The export ships 427 report objects for 412 reports: its pages overlap, so some arrive twice. Every count here is after <code>uniqueById</code>.</p>
 <h2>Why the third one is not a swap</h2>
@@ -68,12 +68,12 @@ aside.warn { border-color: var(--warn); background: var(--warn-bg); }
 <h2>Why the second one survives the fix</h2>
 <p><code>booking-v2</code> prints <code>DD/MM/YYYY</code> under its date field, and <code>booking-v3</code> prints <code>MM/DD/YYYY</code>. Three tenants run <code>booking-v3</code> and all three write the day first. Their people type the month first, because the hint tells them to, and the form stores it the tenant's way. Every report in this group came through the form and through no other channel.</p>
 <p>So these dates are wrong in the opposite direction from the rest of the ticket. Teach the parser to read each tenant's order and this group gets read the tenant's way too, which is not the way it was typed. The hint and the reader have to agree first; either the hint matches how the form reads, or the form reads what the hint promised.</p>
-<h2>What the ticket's own table already showed</h2>
-<p>The incident page claims one cause in its words. Its own table, built from the data at render time, has been printing two rows and flagging the second as <em>not this ticket — no ticket of its own</em> since before this page existed:</p>
-<p class="sum"><strong>412</strong> reports merged into #4471 · <strong>2</strong> causes</p>
+<h2>What the ticket's own table had been showing</h2>
+<p>The incident page claimed one cause in its words, and its own table, built from the data at render time, had been printing two: the second flagged <em>not this ticket — no ticket of its own</em>, since before this page existed. The table was right and the words were not.</p>
+<p>That row is gone now, because the reports behind it were moved to the ticket they should always have had. The table below is the ticket as it stands, one cause and its footnote, and that is the whole point: nothing here was written by hand. Move the reports and the page tells the truth by itself.</p>
+<p class="sum"><strong>379</strong> reports merged into #4471 · <strong>1</strong> cause</p>
 <table><thead><tr><th>cause</th><th>reports</th><th>tagged as</th><th>tenants</th><th>seen</th><th></th></tr></thead><tbody>
 <tr><td><code>parser</code></td><td>379</td><td class="tags">parser ×356 · hint ×23</td><td>11</td><td>2026-04-01 → 2026-10-04</td><td>#4471</td></tr>
-<tr class="wrong"><td><code>hint</code></td><td>33</td><td class="tags">hint ×18 · parser ×15</td><td>3</td><td>2026-04-17 → 2026-09-22</td><td>not this ticket — no ticket of its own</td></tr>
 </tbody></table><p class="note">5 reports read as a one-day move; filed under <code>parser</code> by tenant.</p>
 <h2>The tickets</h2>
 <p>One cause was in the wrong ticket, and <code>causes.ts</code> says which: <em>a ticket is the cause most of its reports share; <strong>the rest were merged into the wrong place</strong></em>. <code>ticketCause</code> reads #4471's cause off its reports and gets <code>parser</code>, so the reports of the <code>hint</code> cause are the ones in the wrong place. The desk's own table has been printing it beside that row for months: <em>not this ticket — no ticket of its own</em>.</p>
